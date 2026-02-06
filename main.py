@@ -6,6 +6,7 @@ from google import genai
 # CLI argument
 parser = argparse.ArgumentParser(description = "Chatbot")
 parser.add_argument("user_prompt", type = str, help = "User prompt")
+parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
 args = parser.parse_args()
 
 #set messages
@@ -30,6 +31,9 @@ if usage_metadata == None:
     raise RuntimeError("Failed API request")
 prompt_token_count = usage_metadata.prompt_token_count
 response_token_count = usage_metadata.candidates_token_count
-print("Prompt tokens: ", prompt_token_count)
-print("Response tokens: ", response_token_count)
-print(generate_content.text)
+if args.verbose:
+    print("User prompt: ", generate_content.text)
+    print("Prompt tokens: ", prompt_token_count)
+    print("Response tokens: ", response_token_count)
+else:
+    print(generate_content.text)
