@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 from prompts import system_prompt
-from functions.call_functions import available_functions
+from functions.call_function import available_functions
 
 # CLI argument
 parser = argparse.ArgumentParser(description = "Chatbot")
@@ -27,20 +27,25 @@ generate_content = client.models.generate_content(
         model = "gemini-2.5-flash",
         contents = messages,
         config = types.GenerateContentConfig(
-            tools = [avavilable_functions]
+            tools = [available_functions],
             system_instruction = system_prompt,
             temperature = 0),
         )
 
 #count token usage
 usage_metadata = generate_content.usage_metadata
+function_calls = generate_content.function_calls
 if usage_metadata == None:
     raise RuntimeError("Failed API request")
 prompt_token_count = usage_metadata.prompt_token_count
 response_token_count = usage_metadata.candidates_token_count
-if args.verbose:
-    print("User prompt: ", generate_content.text)
-    print("Prompt tokens: ", prompt_token_count)
-    print("Response tokens: ", response_token_count)
+if function_calls == None:
+    if args.verbose:
+        print("User prompt: ", generate_content.text)
+        print("Prompt tokens: ", prompt_token_count)
+        print("Response tokens: ", response_token_count)
+    else:
+        print(generate_content.text)
 else:
-    print(generate_content.text)
+    for function_call in function_calls:
+        print(f"Calling function: {function_call.name}({function_call.args})")
