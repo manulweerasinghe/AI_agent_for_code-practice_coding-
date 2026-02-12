@@ -2,6 +2,9 @@ import argparse
 import os
 from dotenv import load_dotenv
 from google import genai
+from google.genai import types
+from prompts import system_prompt
+from functions.call_functions import available_functions
 
 # CLI argument
 parser = argparse.ArgumentParser(description = "Chatbot")
@@ -10,7 +13,7 @@ parser.add_argument("--verbose", action="store_true", help="Enable verbose outpu
 args = parser.parse_args()
 
 #set messages
-messages = [genai.types.Content(role="user", parts=[genai.types.Part(text = args.user_prompt)])]
+messages = [types.Content(role="user", parts=[genai.types.Part(text = args.user_prompt)])]
 
 #get api key
 load_dotenv()
@@ -22,7 +25,11 @@ if api_key == None:
 client = genai.Client(api_key = api_key)
 generate_content = client.models.generate_content(
         model = "gemini-2.5-flash",
-        contents = messages
+        contents = messages,
+        config = types.GenerateContentConfig(
+            tools = [avavilable_functions]
+            system_instruction = system_prompt,
+            temperature = 0),
         )
 
 #count token usage
