@@ -5,6 +5,7 @@ from google import genai
 from google.genai import types
 from prompts import system_prompt
 from functions.call_function import available_functions
+from functions.call_function import call_function
 
 def main():
     # CLI argument
@@ -49,6 +50,16 @@ def main():
     else:
         for function_call in function_calls:
             print(f"Calling function: {function_call.name}({function_call.args})")
+            function_call_result = call_function(function_call, args.verbose)
+            if function_call_result.parts == []:
+                raise RuntimeError("Empty parts list from called function") 
+            if not function_call_result.parts[0].function_response:
+                raise RuntimeError("Empty parts list [0].function_response from called function")
+            if not function_call_result.parts[0].function_response.response:
+                raise RuntimeError("Empty parts list [0].function_response.response from called function")
+            function_result_list = [function_call_result.parts[0]]
+            if args.verbose:
+                print(f"-> {function_call_result.parts[0].function_response.response}")
 
 if __name__ == "__main__":
     main()

@@ -2,9 +2,9 @@ from google.genai import types
 import os
 import subprocess
 osp = os.path
-def run_python_file(working_dir, file_path, args = None):
+def run_python_file(working_directory, file_path, args = None):
     try:
-        work_abs_dir = osp.abspath(working_dir)
+        work_abs_dir = osp.abspath(working_directory)
         file_dir = osp.normpath(osp.join(work_abs_dir, file_path))
         if not osp.commonpath([work_abs_dir, file_dir]) == work_abs_dir:
             return f'Error: Cannot execute "{file_path}" as it is outside the permitted working directory'
