@@ -6,4 +6,4 @@ To see how this program behave look at the "prompts.py" file. Those are the syst
 
 ### This project is completed.
 
-#### Note: This is toy agent with minimalal security features. Don't use it unless you know waht your doing.
+#### Note: This is toy agent with minimalal security features. Don't use it, unless you know what your doing.
