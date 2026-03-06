@@ -8,10 +8,12 @@ def write_file(working_directory, file_path, content):
 
         if not osp.commonpath([work_abs, file_dir]) == work_abs:
             return f'Error: Cannot write to "{file_path}" as it is outside the permitted working directory'
+        #print(file_dir)
+        #print(osp.split(file_dir)[0])
         if osp.isdir(file_dir):
             return f'Error: Cannot write to "{file_path}" as it is a directory'
     
-        os.makedirs(file_path, exist_ok = True)
+        os.makedirs(osp.split(file_dir)[0], exist_ok = True)
 
         with open(file_dir, "w") as f:
             f.write(content)
